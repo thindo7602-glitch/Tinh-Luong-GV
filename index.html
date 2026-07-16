@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Lương Giáo viên Tiểu học</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d1024;
+    --bg-glow-1:#1b2154;
+    --bg-glow-2:#2a1450;
+    --card:#171a3a;
+    --card-2:#1e2247;
+    --line:rgba(255,255,255,0.07);
+    --text:#eef0fb;
+    --text-dim:#8891b8;
+
+    --blue:#4f7cff;
+    --blue-2:#2f57e0;
+    --purple:#9b5cf6;
+    --purple-2:#7c3aed;
+    --teal:#1fd1a8;
+    --teal-2:#0fae87;
+    --amber:#ffb020;
+    --amber-2:#f08a00;
+    --coral:#ff5d7a;
+    --coral-2:#e83f61;
+  }
+  *{box-sizing:border-box;}
+  html{
+    background:
+      repeating-linear-gradient(-45deg,
+        rgba(255,255,255,0.044) 0mm,
+        rgba(255,255,255,0.044) 3.9mm,
+        transparent 3.9mm,
+        transparent 7.8mm),
+      radial-gradient(circle at 12% -10%, var(--bg-glow-1) 0%, transparent 45%),
+      radial-gradient(circle at 100% 10%, var(--bg-glow-2) 0%, transparent 40%),
+      var(--bg);
+  }
+  html, body{ margin:0; }
+  body{
+    min-height:100vh;
+    font-family:'Inter', sans-serif;
+    color:var(--text);
+    background:transparent;
+    padding:36px 20px 50px;
+    position:relative;
+  }
+  .bg-fixed{
+    position:fixed;
+    top:0; left:0; right:0; bottom:0;
+    z-index:-1;
+    pointer-events:none;
+    background:
+      repeating-linear-gradient(-45deg,
+        rgba(255,255,255,0.044) 0mm,
+        rgba(255,255,255,0.044) 3.9mm,
+        transparent 3.9mm,
+        transparent 7.8mm),
+      radial-gradient(circle at 12% -10%, var(--bg-glow-1) 0%, transparent 45%),
+      radial-gradient(circle at 100% 10%, var(--bg-glow-2) 0%, transparent 40%),
+      var(--bg);
+  }
+  .wrap{max-width:1180px; margin:0 auto;}
+
+  /* ---------- GRADIENT HEADING (teal -> amber) ---------- */
+  .grad-heading{
+    background:linear-gradient(180deg, var(--teal) 0%, var(--amber) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+  }
+  .group-heading{
+    font-family:'Poppins', sans-serif;
+    font-size:12.5px;
+    font-weight:800;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    margin:6px 0 14px;
+    background:linear-gradient(180deg, var(--teal) 0%, var(--amber) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .group-heading:first-of-type{margin-top:0;}
+
+  /* ---------- HERO (kính trong suốt + hoa văn chìm) ---------- */
+  .hero{
+    position:relative;
+    background:rgba(255,255,255,0.045);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:26px;
+    padding:34px 38px;
+    margin-bottom:30px;
+    overflow:hidden;
+    box-shadow:0 26px 54px -30px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  .hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><g fill='none' stroke='%23ffffff' stroke-opacity='0.08' stroke-width='1'><circle cx='70' cy='70' r='58'/><circle cx='70' cy='70' r='34'/><path d='M0 70H140M70 0V140'/></g></svg>");
+    background-repeat:repeat;
+    background-size:140px 140px;
+    opacity:0.7;
+    pointer-events:none;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;
+    right:-60px; top:-60px;
+    width:220px; height:220px;
+    background:radial-gradient(circle, rgba(31,209,168,0.35), transparent 70%);
+    pointer-events:none;
+  }
+
+  /* ---------- HEADER ---------- */
+  .top{
+    position:relative;
+    z-index:1;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:16px;
+  }
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:linear-gradient(135deg, var(--purple), var(--blue));
+    padding:6px 14px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:#fff;
+    box-shadow:0 8px 18px -6px rgba(124,58,237,0.6);
+    margin-bottom:10px;
+  }
+  h1{
+    font-family:'Poppins', sans-serif;
+    font-weight:800;
+    font-size:30px;
+    margin:0;
+    line-height:1.25;
+    background:linear-gradient(90deg,#ffffff, #b9c2ff);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .top .desc{
+    color:var(--text-dim);
+    font-size:13px;
+    max-width:460px;
+    margin-top:8px;
+    line-height:1.6;
+  }
+  .status-pill{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    font-weight:600;
+    color:var(--teal);
+    background:rgba(31,209,168,0.1);
+    border:1px solid rgba(31,209,168,0.35);
+    padding:8px 14px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .status-pill .dot{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--teal);
+    box-shadow:0 0 0 3px rgba(31,209,168,0.25);
+  }
+
+  /* ---------- MAIN GRID ---------- */
+  .main-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+  }
+  @media (max-width:900px){ .main-grid{grid-template-columns:1fr;} }
+
+  .panel{
+    position:relative;
+    background:linear-gradient(160deg, rgba(30,34,71,0.20), rgba(23,26,58,0.15));
+    backdrop-filter:blur(30px) saturate(190%);
+    -webkit-backdrop-filter:blur(30px) saturate(190%);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:20px;
+    padding:26px 26px 28px;
+    box-shadow:0 20px 40px -24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+    overflow:hidden;
+  }
+  .panel::before{
+    content:"";
+    position:absolute;
+    top:-55%; left:-18%;
+    width:75%; height:75%;
+    background:radial-gradient(circle, rgba(255,255,255,0.05), transparent 70%);
+    pointer-events:none;
+  }
+  .panel-title{
+    font-family:'Poppins', sans-serif;
+    font-size:15px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin:0 0 20px;
+  }
+  .panel-title .title-txt{
+    background:linear-gradient(180deg, var(--teal) 0%, var(--amber) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .panel-title .chip{
+    width:8px;height:20px;
+    border-radius:4px;
+    background:linear-gradient(180deg, var(--blue), var(--purple));
+  }
+
+  .section-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--teal);
+    margin:22px 0 12px;
+  }
+  .section-label:first-of-type{margin-top:0;}
+
+  .field{margin-bottom:14px;}
+  .field label{
+    display:block;
+    font-size:12.5px;
+    color:#c3c8e6;
+    margin-bottom:6px;
+    font-weight:600;
+  }
+  .field .hint{font-size:10.5px; color:var(--text-dim); font-weight:400; margin-left:3px;}
+
+  .input-wrap{
+    position:relative;
+    display:flex;
+    align-items:center;
+    background:linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.01));
+    backdrop-filter:blur(18px) saturate(150%);
+    -webkit-backdrop-filter:blur(18px) saturate(150%);
+    border:1.5px solid rgba(255,255,255,0.09);
+    border-radius:11px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -6px 10px -8px rgba(0,0,0,0.18);
+    transition:border-color .18s, box-shadow .18s, background .18s;
+  }
+  .input-wrap:hover{background:linear-gradient(160deg, rgba(255,255,255,0.065), rgba(255,255,255,0.015));}
+  .input-wrap:focus-within{
+    border-color:var(--blue);
+    box-shadow:0 0 0 3px rgba(79,124,255,0.18), inset 0 1px 0 rgba(255,255,255,0.1);
+    background:linear-gradient(160deg, rgba(255,255,255,0.075), rgba(255,255,255,0.02));
+  }
+  .input-wrap input, .input-wrap select{
+    width:100%;
+    border:none;
+    background:transparent;
+    font-family:'JetBrains Mono', monospace;
+    font-size:14.5px;
+    font-weight:600;
+    padding:11px 12px;
+    color:var(--text);
+    outline:none;
+    border-radius:11px;
+    appearance:none;
+    -webkit-appearance:none;
+  }
+  .input-wrap select{cursor:pointer;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M5.5 7.5l4.5 4.5 4.5-4.5' stroke='%234f7cff' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat;
+    background-position:right 12px center;
+    background-size:14px;
+  }
+  .input-wrap select option{color:#0d1024;}
+  .input-wrap .unit{
+    font-size:12px;
+    font-weight:700;
+    color:var(--blue);
+    white-space:nowrap;
+    font-family:'JetBrains Mono', monospace;
+    padding-right:12px;
+    border-left:1px solid rgba(255,255,255,0.1);
+    padding-left:10px;
+    margin-left:2px;
+  }
+  .input-wrap input::placeholder{color:#575d80;}
+
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .three-col{display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;}
+
+  button.calc-btn{
+    width:100%;
+    margin-top:22px;
+    padding:15px;
+    background:linear-gradient(135deg, var(--blue), var(--purple));
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    font-family:'Inter', sans-serif;
+    font-weight:700;
+    font-size:14.5px;
+    letter-spacing:.02em;
+    cursor:pointer;
+    box-shadow:0 14px 26px -10px rgba(124,58,237,0.55);
+    transition:transform .15s, box-shadow .2s;
+  }
+  button.calc-btn:hover{box-shadow:0 18px 30px -10px rgba(124,58,237,0.7); transform:translateY(-1px);}
+  .calc-btn-text{
+    display:inline-block;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    font-weight:800;
+    background:linear-gradient(90deg, #ffffff, var(--teal), var(--amber), #ffffff);
+    background-size:300% 100%;
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    animation:btnTextShift 4.5s linear infinite;
+  }
+  @keyframes btnTextShift{
+    0%{background-position:0% 50%;}
+    100%{background-position:300% 50%;}
+  }
+  button.calc-btn:active{transform:scale(.98);}
+
+  /* ---------- RESULT LINES ---------- */
+  .line{
+    position:relative;
+    padding:13px 15px;
+    margin-bottom:9px;
+    border-radius:12px;
+    background:linear-gradient(160deg, rgba(255,255,255,0.038), rgba(255,255,255,0.008));
+    backdrop-filter:blur(18px) saturate(170%);
+    -webkit-backdrop-filter:blur(18px) saturate(170%);
+    border:1px solid rgba(255,255,255,0.06);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .line .top-row{display:flex; justify-content:space-between; align-items:baseline; gap:10px;}
+  .line .label{font-size:13px; color:#cfd3ee; font-weight:600;}
+  .line .value{font-family:'JetBrains Mono', monospace; font-size:14.5px; font-weight:700; white-space:nowrap;}
+  .line .formula{font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--text-dim); margin-top:5px; word-break:break-word;}
+  .line.plus{border-left:3px solid var(--teal); background:linear-gradient(160deg, rgba(31,209,168,0.07), rgba(255,255,255,0.01));}
+  .line.plus .value{color:var(--teal);}
+  .line.minus{border-left:3px solid var(--coral); background:linear-gradient(160deg, rgba(255,93,122,0.07), rgba(255,255,255,0.01));}
+  .line.minus .value{color:var(--coral);}
+
+  /* stacked composition bar */
+  .composition{margin:16px 0 20px;}
+  .bar{
+    height:16px;
+    border-radius:999px;
+    overflow:hidden;
+    display:flex;
+    background:rgba(255,255,255,0.06);
+    box-shadow:inset 0 2px 4px rgba(0,0,0,0.3);
+  }
+  .bar span{height:100%; transition:width .5s ease;}
+  .bar .seg-luongchinh{background:linear-gradient(90deg, var(--blue), var(--blue-2));}
+  .bar .seg-uudai{background:linear-gradient(90deg, var(--purple), var(--purple-2));}
+  .bar .seg-phucap{background:linear-gradient(90deg, var(--amber), var(--amber-2));}
+  .legend{display:flex; flex-wrap:wrap; gap:14px; margin-top:10px;}
+  .legend .item{display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-dim);}
+  .legend .dot{width:9px;height:9px;border-radius:3px;}
+  .legend .dot.b{background:var(--blue);}
+  .legend .dot.p{background:var(--purple);}
+  .legend .dot.a{background:var(--amber);}
+
+  .total-line{
+    position:relative;
+    margin-top:16px;
+    padding:20px 22px;
+    overflow:hidden;
+    background:
+      linear-gradient(120deg, rgba(31,209,168,0.16) 0%, rgba(255,176,32,0.16) 100%),
+      linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.01));
+    backdrop-filter:blur(24px) saturate(160%);
+    -webkit-backdrop-filter:blur(24px) saturate(160%);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:14px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 18px 32px -18px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.13);
+    animation:totalLinePulse 3.2s ease-in-out infinite;
+  }
+  @keyframes totalLinePulse{
+    0%, 100%{ filter:brightness(1); }
+    50%{ filter:brightness(0.8); }
+  }
+  .total-line::before{
+    content:"";
+    position:absolute;
+    top:-50%; left:-15%;
+    width:70%; height:70%;
+    background:radial-gradient(circle, rgba(255,255,255,0.18), transparent 70%);
+    pointer-events:none;
+  }
+  .total-line .label{position:relative; color:rgba(255,255,255,0.85); font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;}
+  .total-line .amount{position:relative; font-family:'JetBrains Mono', monospace; background:linear-gradient(90deg, var(--teal), var(--amber)); -webkit-background-clip:text; background-clip:text; color:transparent; font-size:24px; font-weight:800;}
+
+  .empty-state{
+    font-size:13px;
+    color:var(--text-dim);
+    line-height:1.7;
+    padding:40px 10px;
+    text-align:center;
+    border:1px dashed var(--line);
+    border-radius:14px;
+  }
+  .empty-state b{color:var(--text);}
+
+  .result-body{display:none;}
+  .result-body.show{display:block; animation:fadeIn .35s ease;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  footer{
+    text-align:center;
+    margin-top:34px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:.06em;
+    color:var(--text-dim);
+  }
+  footer .line{margin-top:7px; text-transform:uppercase;}
+  footer .line:first-child{margin-top:0;}
+  footer .name{
+    color:var(--teal);
+    font-weight:800;
+    font-size:13.6px;
+    filter:brightness(1.1);
+    animation:designerGlow 3.2s ease-in-out infinite;
+  }
+  footer .contact{
+    text-transform:none;
+    letter-spacing:.02em;
+    color:var(--text-dim);
+  }
+  footer .phone, footer .email{
+    color:#ff9500;
+    font-weight:700;
+    letter-spacing:.04em;
+  }
+  @keyframes designerGlow{
+    0%, 100%{ color:var(--teal); text-shadow:0 0 10px rgba(31,209,168,0.85), 0 0 2px rgba(31,209,168,0.6); }
+    50%{ color:#0c5c49; text-shadow:0 0 2px rgba(31,209,168,0.15); }
+  }
+  @keyframes phoneGlow{
+    0%, 100%{ color:var(--amber); text-shadow:0 0 10px rgba(255,176,32,0.9), 0 0 2px rgba(255,176,32,0.6); opacity:1; }
+    50%{ color:#8a5a00; text-shadow:0 0 2px rgba(255,176,32,0.15); opacity:0.75; }
+  }
+
+  /* ---------- CHARTS ---------- */
+  .chart-panel{margin-top:20px;}
+  .chart-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin-top:6px;
+  }
+  @media (max-width:900px){ .chart-grid{grid-template-columns:1fr;} }
+
+  /* ---------- CHART BOX: khối nổi 3D, kính màu ---------- */
+  .chart-box{
+    position:relative;
+    border-radius:20px;
+    padding:20px 20px 16px;
+    overflow:hidden;
+    backdrop-filter:blur(24px) saturate(170%);
+    -webkit-backdrop-filter:blur(24px) saturate(170%);
+    border:1px solid rgba(255,255,255,0.12);
+    transform:perspective(900px) rotateX(0.5deg);
+    transition:transform .3s ease, box-shadow .3s ease;
+  }
+  .chart-box:hover{transform:perspective(900px) rotateX(0deg) translateY(-3px);}
+  .chart-box::before{
+    content:"";
+    position:absolute;
+    top:-50%; left:-20%;
+    width:80%; height:80%;
+    background:radial-gradient(circle, rgba(255,255,255,0.25), transparent 70%);
+    pointer-events:none;
+  }
+  .chart-box.tint-blue{
+    background:linear-gradient(160deg, rgba(79,124,255,0.12), rgba(155,92,246,0.055) 55%, rgba(255,255,255,0.015));
+    box-shadow:
+      0 26px 46px -22px rgba(79,124,255,0.28),
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      inset 0 -14px 24px -16px rgba(0,0,0,0.22);
+  }
+  .chart-box.tint-teal{
+    background:linear-gradient(160deg, rgba(31,209,168,0.12), rgba(255,176,32,0.065) 55%, rgba(255,255,255,0.015));
+    box-shadow:
+      0 26px 46px -22px rgba(31,209,168,0.25),
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      inset 0 -14px 24px -16px rgba(0,0,0,0.22);
+  }
+  .chart-box .chart-label{
+    position:relative;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.75);
+    margin:0 0 14px;
+  }
+  .chart-canvas-wrap{position:relative; height:250px;}
+</style>
+</head>
+<body>
+<div class="bg-fixed"></div>
+<div class="wrap">
+
+  <div class="top">
+    <div>
+      <div class="badge">✦ Payroll Dashboard</div>
+      <h1 class="grad-heading" style="font-size:32px; font-family:'Tahoma', sans-serif; font-weight:800;">Bảng Tính Lương Giáo Viên</h1>
+    </div>
+    <div class="status-pill"><span class="dot"></span> SẴN SÀNG TÍNH TOÁN</div>
+  </div>
+
+  <div class="main-grid">
+
+    <div class="panel">
+      <p class="panel-title"><span class="chip"></span><span class="title-txt">Nhập số liệu</span></p>
+
+      <p class="section-label">Lương chính</p>
+      <div class="two-col">
+        <div class="field">
+          <label>Mức lương cơ sở <span class="hint">đồng</span></label>
+          <div class="input-wrap">
+            <select id="mucLuongCoSo">
+              <option value="2340000">2.340.000 đ</option>
+              <option value="2530000">2.530.000 đ</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Hệ số lương</label>
+          <div class="input-wrap">
+            <select id="heSoLuongSelect" onchange="toggleCustomInput('heSoLuongSelect','heSoLuongCustomWrap')">
+              <option value="4.0">4,0</option>
+              <option value="4.34" selected>4,34</option>
+              <option value="4.68">4,68</option>
+              <option value="5.02">5,02</option>
+              <option value="other">Khác (nhập số)...</option>
+            </select>
+          </div>
+          <div class="input-wrap" id="heSoLuongCustomWrap" style="display:none; margin-top:8px;">
+            <input type="number" step="0.01" id="heSoLuongCustom" placeholder="Nhập hệ số">
+          </div>
+        </div>
+      </div>
+
+      <p class="section-label">Phụ cấp</p>
+      <div class="field">
+        <label>Ưu đãi nghề <span class="hint">% lương chính</span></label>
+        <div class="input-wrap">
+          <select id="phuCapUuDaiSelect" onchange="toggleCustomInput('phuCapUuDaiSelect','uuDaiCustomWrap')">
+            <option value="35">35%</option>
+            <option value="50" selected>50%</option>
+            <option value="60">60%</option>
+            <option value="70">70%</option>
+            <option value="80">80%</option>
+            <option value="other">Khác (nhập số)...</option>
+          </select>
+        </div>
+        <div class="input-wrap" id="uuDaiCustomWrap" style="display:none; margin-top:8px;">
+          <input type="number" id="phuCapUuDaiCustom" placeholder="Nhập %"><span class="unit">%</span>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="field">
+          <label>Phụ cấp thâm niên <span class="hint">% lương chính</span></label>
+          <div class="input-wrap">
+            <select id="phuCapThamNien">
+              <option value="15">15%</option>
+              <option value="16">16%</option>
+              <option value="17">17%</option>
+              <option value="18">18%</option>
+              <option value="19" selected>19%</option>
+              <option value="20">20%</option>
+              <option value="21">21%</option>
+              <option value="22">22%</option>
+              <option value="23">23%</option>
+              <option value="24">24%</option>
+              <option value="25">25%</option>
+              <option value="26">26%</option>
+              <option value="27">27%</option>
+              <option value="28">28%</option>
+              <option value="29">29%</option>
+              <option value="30">30%</option>
+              <option value="31">31%</option>
+              <option value="32">32%</option>
+              <option value="33">33%</option>
+              <option value="34">34%</option>
+              <option value="35">35%</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Phụ cấp khu vực <span class="hint">% lương cơ sở</span></label>
+          <div class="input-wrap">
+            <select id="phuCapKhuVuc">
+              <option value="10" selected>10%</option>
+              <option value="20">20%</option>
+              <option value="30">30%</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <label>Phụ cấp chức vụ <span class="hint">% lương chính</span></label>
+          <div class="input-wrap"><input type="number" id="phuCapChucVu" placeholder="0"><span class="unit">%</span></div>
+        </div>
+        <div class="field">
+          <label>Phụ cấp khác <span class="hint">% lương chính</span></label>
+          <div class="input-wrap"><input type="number" id="phuCapKhac" placeholder="0"><span class="unit">%</span></div>
+        </div>
+      </div>
+
+      <p class="section-label">Tỷ lệ trích bảo hiểm</p>
+      <div class="three-col">
+        <div class="field">
+          <label>BHXH <span class="hint">%</span></label>
+          <div class="input-wrap"><input type="number" id="tyLeBHXH" value="8"></div>
+        </div>
+        <div class="field">
+          <label>BHYT <span class="hint">%</span></label>
+          <div class="input-wrap"><input type="number" id="tyLeBHYT" value="1.5"></div>
+        </div>
+        <div class="field">
+          <label>BHTN <span class="hint">%</span></label>
+          <div class="input-wrap"><input type="number" id="tyLeBHTN" value="1"></div>
+        </div>
+      </div>
+
+      <button class="calc-btn" onclick="tinhLuong()"><span class="calc-btn-text">⚡ Tính lương ngay</span></button>
+    </div>
+
+    <div class="panel">
+      <p class="panel-title"><span class="chip"></span><span class="title-txt">Kết quả chi tiết</span></p>
+
+      <div class="empty-state" id="emptyState">
+        Điền số liệu vào ô rồi bấm <b>“Tính lương ngay”</b><br>để xem chi tiết và biểu đồ cơ cấu lương.
+      </div>
+
+      <div class="result-body" id="resultBody">
+
+        <div class="composition">
+          <div class="bar">
+            <span class="seg-luongchinh" id="segLuongChinh" style="width:0%"></span>
+            <span class="seg-uudai" id="segUuDai" style="width:0%"></span>
+            <span class="seg-phucap" id="segPhuCap" style="width:0%"></span>
+          </div>
+          <div class="legend">
+            <div class="item"><span class="dot b"></span>Lương chính</div>
+            <div class="item"><span class="dot p"></span>Ưu đãi nghề</div>
+            <div class="item"><span class="dot a"></span>Phụ cấp khác</div>
+          </div>
+        </div>
+
+        <div class="line plus">
+          <div class="top-row"><span class="label">Lương chính</span><span class="value" id="rLuongChinh">0 đ</span></div>
+          <div class="formula" id="fLuongChinh">Hệ số × Mức lương cơ sở</div>
+        </div>
+
+        <div class="line plus">
+          <div class="top-row"><span class="label">Ưu đãi nghề</span><span class="value" id="rUuDai">0 đ</span></div>
+          <div class="formula" id="fUuDai">% ưu đãi × Lương chính</div>
+        </div>
+
+        <div class="line plus">
+          <div class="top-row"><span class="label">Phụ cấp thâm niên</span><span class="value" id="rThamNien">0 đ</span></div>
+          <div class="formula" id="fThamNien">% thâm niên × Lương chính</div>
+        </div>
+
+        <div class="line plus">
+          <div class="top-row"><span class="label">Phụ cấp khu vực</span><span class="value" id="rKhuVuc">0 đ</span></div>
+          <div class="formula" id="fKhuVuc">% khu vực × Lương cơ sở</div>
+        </div>
+
+        <div class="line plus">
+          <div class="top-row"><span class="label">Phụ cấp chức vụ</span><span class="value" id="rChucVu">0 đ</span></div>
+          <div class="formula" id="fChucVu">% chức vụ × Lương chính</div>
+        </div>
+
+        <div class="line plus">
+          <div class="top-row"><span class="label">Phụ cấp khác</span><span class="value" id="rPhuCapKhac">0 đ</span></div>
+          <div class="formula" id="fPhuCapKhac">% khác × Lương chính</div>
+        </div>
+
+        <div class="line">
+          <div class="top-row"><span class="label">Tổng thu nhập trước bảo hiểm</span><span class="value" id="rTongThuNhap">0 đ</span></div>
+        </div>
+
+        <div class="line minus">
+          <div class="top-row"><span class="label">Cơ sở đóng bảo hiểm</span><span class="value" id="rCoSoBaoHiem">0 đ</span></div>
+          <div class="formula" id="fCoSoBaoHiem">= Lương chính + Chức vụ + Thâm niên + Khác (không gồm ưu đãi nghề, khu vực)</div>
+        </div>
+
+        <div class="line minus">
+          <div class="top-row"><span class="label">Trừ BHXH + BHYT + BHTN</span><span class="value" id="rTongBaoHiem">− 0 đ</span></div>
+          <div class="formula" id="fBaoHiem">Cơ sở đóng bảo hiểm × tổng %</div>
+        </div>
+
+        <div class="total-line">
+          <span class="label">Lương thực nhận</span>
+          <span class="amount" id="rLuongThucNhan">0 đ</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="panel chart-panel">
+    <p class="panel-title"><span class="chip"></span><span class="title-txt">Biểu đồ trực quan</span></p>
+    <div class="chart-grid">
+      <div class="chart-box tint-blue">
+        <p class="chart-label">Trước &amp; sau khi trừ bảo hiểm</p>
+        <div class="chart-canvas-wrap"><canvas id="barChart"></canvas></div>
+      </div>
+      <div class="chart-box tint-teal">
+        <p class="chart-label">Cơ cấu các khoản trong lương</p>
+        <div class="chart-canvas-wrap"><canvas id="pieChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="line">Thiết kế: <span class="name">Thìn Đỗ</span> · Tháng 7/2026</div>
+    <div class="line contact">📱 <span class="phone">0888 819 957</span> &nbsp;·&nbsp; ✉️ <span class="email">domanhthin@gmail.com</span></div>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+<script>
+if(typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined'){
+  Chart.register(ChartDataLabels);
+}
+function formatVND(n){ return Math.round(n).toLocaleString('vi-VN') + ' đ'; }
+function formatNum(n){ return Math.round(n).toLocaleString('vi-VN'); }
+function getVal(id){
+  const v = parseFloat(document.getElementById(id).value);
+  return isNaN(v) ? 0 : v;
+}
+function toggleCustomInput(selectId, wrapId){
+  const sel = document.getElementById(selectId);
+  const wrap = document.getElementById(wrapId);
+  wrap.style.display = (sel.value === 'other') ? 'flex' : 'none';
+}
+function getSelectOrCustom(selectId, customId){
+  const sel = document.getElementById(selectId);
+  if(sel.value === 'other'){
+    return getVal(customId);
+  }
+  const v = parseFloat(sel.value);
+  return isNaN(v) ? 0 : v;
+}
+
+let barChartInstance = null;
+let pieChartInstance = null;
+
+function updateCharts(data){
+  if(typeof Chart === 'undefined'){
+    console.warn('Chart.js chưa tải được, bỏ qua vẽ biểu đồ.');
+    return;
+  }
+  const {tongThuNhap, luongThucNhan, tongBaoHiem, luongChinh, uuDai, tienChucVu, tienThamNien, tienKhuVuc, tienKhac} = data;
+
+  const fontColor = '#8891b8';
+  const gridColor = 'rgba(255,255,255,0.06)';
+
+  // Biểu đồ cột: trước / sau bảo hiểm
+  const barCtx = document.getElementById('barChart').getContext('2d');
+  const barData = {
+    labels:['Trước bảo hiểm', 'Trừ bảo hiểm', 'Sau bảo hiểm (thực nhận)'],
+    datasets:[{
+      data:[tongThuNhap, tongBaoHiem, luongThucNhan],
+      backgroundColor:['rgba(79,124,255,0.85)', 'rgba(255,93,122,0.85)', 'rgba(31,209,168,0.85)'],
+      borderRadius:8,
+      maxBarThickness:70
+    }]
+  };
+  const barOptions = {
+    responsive:true,
+    maintainAspectRatio:false,
+    layout:{ padding:{ top:22 } },
+    plugins:{
+      legend:{display:false},
+      datalabels:{
+        anchor:'end',
+        align:'top',
+        offset:4,
+        color:'#eef0fb',
+        font:{family:'JetBrains Mono', size:10.5, weight:700},
+        formatter:(value)=>formatNum(value)
+      }
+    },
+    scales:{
+      x:{ ticks:{color:fontColor, font:{family:'Inter', size:10.5}}, grid:{display:false} },
+      y:{ ticks:{color:fontColor, font:{family:'JetBrains Mono', size:10}, callback:(v)=>formatNum(v)}, grid:{color:gridColor} }
+    }
+  };
+  if(barChartInstance){
+    barChartInstance.data = barData;
+    barChartInstance.update();
+  } else {
+    barChartInstance = new Chart(barCtx, {type:'bar', data:barData, options:barOptions});
+  }
+
+  // Biểu đồ tròn: cơ cấu các khoản trong lương (gộp, trước bảo hiểm)
+  const pieCtx = document.getElementById('pieChart').getContext('2d');
+  const pieData = {
+    labels:['Lương chính','Ưu đãi nghề','Chức vụ','Thâm niên','Khu vực','Phụ cấp khác'],
+    datasets:[{
+      data:[luongChinh, uuDai, tienChucVu, tienThamNien, tienKhuVuc, tienKhac],
+      backgroundColor:['#4f7cff','#9b5cf6','#ff5d7a','#1fd1a8','#ffb020','#2f57e0'],
+      borderColor:'#171a3a',
+      borderWidth:2
+    }]
+  };
+  const pieOptions = {
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{
+      legend:{
+        position:'bottom',
+        labels:{
+          color:'#c3c8e6', font:{family:'Inter', size:10.5}, boxWidth:10, padding:10,
+          filter:(legendItem, chartData)=> chartData.datasets[0].data[legendItem.index] > 0
+        }
+      },
+      datalabels:{
+        color:'#ffffff',
+        font:{family:'JetBrains Mono', size:10, weight:700},
+        formatter:(value)=> value > 0 ? formatNum(value) : '',
+        display:(ctx)=> ctx.dataset.data[ctx.dataIndex] > 0,
+        anchor:'center',
+        align:'center'
+      }
+    }
+  };
+  if(pieChartInstance){
+    pieChartInstance.data = pieData;
+    pieChartInstance.update();
+  } else {
+    pieChartInstance = new Chart(pieCtx, {type:'pie', data:pieData, options:pieOptions});
+  }
+}
+
+function tinhLuong(){
+  const mucLuongCoSo = getVal('mucLuongCoSo');
+  const heSoLuong = getSelectOrCustom('heSoLuongSelect', 'heSoLuongCustom');
+  const pctUuDai = getSelectOrCustom('phuCapUuDaiSelect', 'phuCapUuDaiCustom');
+  const pcChucVu = getVal('phuCapChucVu');
+  const pcThamNien = getVal('phuCapThamNien');
+  const pcKhuVuc = getVal('phuCapKhuVuc');
+  const pcKhac = getVal('phuCapKhac');
+  const pctBHXH = getVal('tyLeBHXH');
+  const pctBHYT = getVal('tyLeBHYT');
+  const pctBHTN = getVal('tyLeBHTN');
+
+  const luongChinh = heSoLuong * mucLuongCoSo;
+  const uuDai = luongChinh * (pctUuDai / 100);
+  const tienChucVu = luongChinh * (pcChucVu / 100);
+  const tienThamNien = luongChinh * (pcThamNien / 100);
+  const tienKhuVuc = mucLuongCoSo * (pcKhuVuc / 100);
+  const tienKhac = luongChinh * (pcKhac / 100);
+  const tongPhuCapKhac = tienChucVu + tienThamNien + tienKhuVuc + tienKhac;
+  const tongThuNhap = luongChinh + uuDai + tongPhuCapKhac;
+
+  // Bảo hiểm: tính trên lương chính + chức vụ + thâm niên + phụ cấp khác
+  // (KHÔNG gồm ưu đãi nghề và phụ cấp khu vực)
+  const coSoBaoHiem = luongChinh + tienChucVu + tienThamNien + tienKhac;
+  const tongTyLeBaoHiem = (pctBHXH + pctBHYT + pctBHTN) / 100;
+  const tongBaoHiem = coSoBaoHiem * tongTyLeBaoHiem;
+
+  const luongThucNhan = tongThuNhap - tongBaoHiem;
+
+  // Detail lines
+  document.getElementById('rLuongChinh').textContent = formatVND(luongChinh);
+  document.getElementById('fLuongChinh').textContent =
+    `${heSoLuong} × ${formatNum(mucLuongCoSo)} = ${formatNum(luongChinh)}`;
+
+  document.getElementById('rUuDai').textContent = formatVND(uuDai);
+  document.getElementById('fUuDai').textContent =
+    `${pctUuDai}% × ${formatNum(luongChinh)} = ${formatNum(uuDai)}`;
+
+  document.getElementById('rChucVu').textContent = formatVND(tienChucVu);
+  document.getElementById('fChucVu').textContent =
+    `${pcChucVu}% × ${formatNum(luongChinh)} = ${formatNum(tienChucVu)}`;
+
+  document.getElementById('rThamNien').textContent = formatVND(tienThamNien);
+  document.getElementById('fThamNien').textContent =
+    `${pcThamNien}% × ${formatNum(luongChinh)} = ${formatNum(tienThamNien)}`;
+
+  document.getElementById('rKhuVuc').textContent = formatVND(tienKhuVuc);
+  document.getElementById('fKhuVuc').textContent =
+    `${pcKhuVuc}% × ${formatNum(mucLuongCoSo)} = ${formatNum(tienKhuVuc)}`;
+
+  document.getElementById('rPhuCapKhac').textContent = formatVND(tienKhac);
+  document.getElementById('fPhuCapKhac').textContent =
+    `${pcKhac}% × ${formatNum(luongChinh)} = ${formatNum(tienKhac)}`;
+
+  document.getElementById('rTongThuNhap').textContent = formatVND(tongThuNhap);
+  document.getElementById('rCoSoBaoHiem').textContent = formatVND(coSoBaoHiem);
+  document.getElementById('fCoSoBaoHiem').textContent =
+    `${formatNum(luongChinh)} + ${formatNum(tienChucVu)} + ${formatNum(tienThamNien)} + ${formatNum(tienKhac)} = ${formatNum(coSoBaoHiem)}`;
+
+  document.getElementById('rTongBaoHiem').textContent = '− ' + formatVND(tongBaoHiem);
+  document.getElementById('fBaoHiem').textContent =
+    `${formatNum(coSoBaoHiem)} × ${(pctBHXH+pctBHYT+pctBHTN)}% = ${formatNum(tongBaoHiem)}`;
+
+  document.getElementById('rLuongThucNhan').textContent = formatVND(luongThucNhan);
+
+  // Composition bar (relative to total thu nhập trước bảo hiểm)
+  const base = tongThuNhap > 0 ? tongThuNhap : 1;
+  document.getElementById('segLuongChinh').style.width = (luongChinh/base*100) + '%';
+  document.getElementById('segUuDai').style.width = (uuDai/base*100) + '%';
+  document.getElementById('segPhuCap').style.width = (tongPhuCapKhac/base*100) + '%';
+
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('resultBody').classList.add('show');
+
+  updateCharts({tongThuNhap, luongThucNhan, tongBaoHiem, luongChinh, uuDai, tienChucVu, tienThamNien, tienKhuVuc, tienKhac});
+}
+</script>
+</body>
+</html>
